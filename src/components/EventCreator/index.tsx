@@ -1,10 +1,10 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Alert, Button } from "react-native";
 import Constants from "expo-constants";
 import * as Calendar from "expo-calendar";
-import { DEFAULT_START_TIME, DEFAULT_END_TIME } from "./config";
+import { DEFAULT_START_TIME, DEFAULT_END_TIME } from "../../config";
 import moment from "moment";
-import React from "react";
 
 const getAppointementDate = (date: moment.MomentInput) =>
   moment(date, "YYYY-MM-DD'T'HH:mm:ss.sssZ").toDate();
@@ -14,7 +14,7 @@ export const EventCreator = () => {
   const [calendarPermissionStatus, setCalendarPermissionStatus] = useState("");
 
   const refreshCalendars = async () => {
-    const calendars:any = await Calendar.getCalendarsAsync(
+    const calendars: any = await Calendar.getCalendarsAsync(
       Calendar.EntityTypes.EVENT
     );
     console.log("Number of calendars available: ", calendars.length);
@@ -31,6 +31,10 @@ export const EventCreator = () => {
     })();
   }, []);
 
+  const createCustomAlarm = async () => {
+    Alert.alert("Created alarm");
+  };
+
   const createEvent = async () => {
     if (calendarPermissionStatus === "granted") {
       const calendarId = await Calendar.createCalendarAsync({
@@ -44,8 +48,8 @@ export const EventCreator = () => {
         name: "Phone Owner",
         ownerAccount: "phoneowner@test.com",
         accessLevel: "owner",
-      //  method: Calendar.AlarmMethod.ALARM,
-      //  relativeOffset: 5,
+        //  method: Calendar.AlarmMethod.ALARM,
+        //  relativeOffset: 5,
       });
 
       try {
@@ -63,7 +67,7 @@ export const EventCreator = () => {
           title,
           alarms: [
             {
-             // method: Calendar.AlarmMethod.ALARM,
+              // method: Calendar.AlarmMethod.ALARM,
               relativeOffset: -1, // 1 minutes before the event
             },
           ],
@@ -87,7 +91,8 @@ export const EventCreator = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Number of events: {calendarIds.length} </Text>
-      <Button title="Create Event Now!" onPress={createEvent} />
+      <Button title="Create Event" onPress={createEvent} />
+      <Button title="Create Alarm" onPress={createCustomAlarm} />
     </View>
   );
 };
@@ -102,6 +107,6 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   label: {
-    fontWeight: "700"
-  }
+    fontWeight: "700",
+  },
 });
