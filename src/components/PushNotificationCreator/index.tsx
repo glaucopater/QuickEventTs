@@ -18,6 +18,7 @@ export default function PushNotificactionCreator() {
   const notificationListener = useRef();
   const responseListener = useRef();
 
+  /*
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
       setExpoPushToken(token)
@@ -41,6 +42,8 @@ export default function PushNotificactionCreator() {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
+
+  */
 
   return (
     <View
@@ -72,17 +75,23 @@ export default function PushNotificactionCreator() {
 }
 
 async function schedulePushNotification() {
+  await Notifications.setNotificationChannelAsync("notification-channel", {
+    name: "Notification channel",
+    importance: Notifications.AndroidImportance.HIGH,
+    sound: "thunder124463.wav",
+  });
+
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "You've got notification! 📬",
       body: "Here is the notification body",
       data: { data: "goes here" },
       importance: Notifications.AndroidImportance.HIGH,
-      vibrate: true,
       icon: "splash.png",
     },
     trigger: {
       seconds: 2,
+      channelId: "notification-channel", // <- for Android 8.0+, see definition above
     },
   });
 }
@@ -91,12 +100,28 @@ async function registerForPushNotificationsAsync() {
   let token;
 
   if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync("default", {
-      name: "default",
+    await Notifications.setNotificationChannelAsync("notification-channel-1", {
+      name: "Notification channel 1",
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#FF231F7C",
+      sound: "thunder124463.wav",
       vibrate: true,
+    });
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "You've got notification! 📬",
+        body: "Here is the notification body",
+        sound: "thunder124463.wav",
+        data: { data: "goes here" },
+        importance: Notifications.AndroidImportance.HIGH,
+        icon: "splash.png",
+      },
+      trigger: {
+        seconds: 2,
+        channelId: "notification-channel-1", // <- for Android 8.0+, see definition above
+      },
     });
   }
 

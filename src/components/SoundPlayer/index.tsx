@@ -8,7 +8,7 @@ export default function SoundPlayer() {
   async function playSound() {
     console.log("Loading Sound");
     const { sound } = await Audio.Sound.createAsync(
-      require("../../../assets/thunder-124463.wav")
+      require("../../../assets/thunder124463.wav")
     );
     setSound(sound);
 
